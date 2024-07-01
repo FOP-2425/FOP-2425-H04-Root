@@ -1,5 +1,8 @@
 package h04.movement;
 
+
+import fopbot.Robot;
+
 public interface MoveStrategy {
-    void move(int dx, int dy);
+    void move(Robot r, int dx, int dy);
 }

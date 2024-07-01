@@ -3,6 +3,9 @@ package h04.template;
 import fopbot.*;
 import fopbot.Robot;
 import h04.*;
+import h04.chesspieces.ChessPiece;
+import h04.chesspieces.King;
+import h04.chesspieces.Team;
 
 import java.awt.*;
 import java.util.*;
@@ -21,6 +24,9 @@ public abstract class GameControllerTemplate {
      */
     protected final ArrayList<Robot> allPieces = new ArrayList<>();
 
+    private Team nextToMove = Team.WHITE;
+
+    private boolean gameOver = false;
 
 
     /**
@@ -28,12 +34,21 @@ public abstract class GameControllerTemplate {
      */
     public void startGame() {
         System.out.println("Starting game...");
+
+        while(!gameOver) {
+            inputHandler.waitForMove(nextToMove);
+            if(checkWinCondition()) stopGame(nextToMove);
+
+            nextToMove = nextToMove.getOpponent();
+        }
     }
+
+    public abstract boolean checkWinCondition();
 
     /**
      * Stops the game loop.
      */
-    public void stopGame(boolean winner) {
+    public void stopGame(Team winner) {
     }
 
     /**
@@ -76,5 +91,20 @@ public abstract class GameControllerTemplate {
         World.setDelay(0);
         World.setVisible(true);
         World.getGlobalWorld().setDrawTurnedOffRobots(false);
+    }
+
+    public King[] getKings() {
+        return allPieces.stream()
+            .filter(King.class::isInstance)
+            .map(King.class::cast)
+            .toArray(King[]::new);
+    }
+
+    public ChessPiece getPieceAt(Point p) {
+        return (ChessPiece) World.getGlobalWorld().getAllFieldEntities().stream()
+            .filter(Robot.class::isInstance)
+            .map(Robot.class::cast)
+            .filter(piece -> piece.getX() == p.x && piece.getY() == p.y && !piece.isTurnedOff())
+            .findFirst().orElse(null);
     }
 }

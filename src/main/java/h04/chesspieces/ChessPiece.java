@@ -1,8 +1,13 @@
 package h04.chesspieces;
 
-import java.awt.Color;
+import h04.movement.MoveStrategy;
+
+import java.awt.Point;
 
 public interface ChessPiece {
     Team getTeam();
-    void moveStrategy(int dx, int dy);
+    int getX();
+    int getY();
+    void moveStrategy(int dx, int dy, MoveStrategy strategy);
+    Point[] getPossibleMoveFields();
 }
