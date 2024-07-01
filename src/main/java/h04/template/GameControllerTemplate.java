@@ -12,24 +12,16 @@ import java.util.*;
  */
 public abstract class GameControllerTemplate {
     /**
-     * The {@link Timer} that controls the game loop.
-     */
-    private final Timer gameLoopTimer = new Timer();
-
-    /**
      * The {@link GameInputHandler} that handles the input of the user.
      */
-    //private final GameInputHandler inputHandler = new GameInputHandler();
-
-    /**
-     * The total umber of coins in the map.
-     */
-    protected int totalCoins;
+    private final GameInputHandler inputHandler = new GameInputHandler();
 
     /**
      * The {@link Robot}s that are controlled by the {@link GameControllerTemplate}.
      */
-    protected final ArrayList<Robot> robots = new ArrayList<>();
+    protected final ArrayList<Robot> allPieces = new ArrayList<>();
+
+
 
     /**
      * Starts the game loop.
@@ -41,28 +33,7 @@ public abstract class GameControllerTemplate {
     /**
      * Stops the game loop.
      */
-    public void stopGame(boolean won) {
-        endscreen(won?Color.GREEN:Color.RED);
-    }
-
-    public void endscreen(Color color) {
-        World.getGlobalWorld().getGuiPanel().setColorProfile(
-            ColorProfile.DEFAULT.toBuilder()
-                .backgroundColorDark(Color.BLACK)
-                .backgroundColorLight(Color.BLACK)
-                .fieldColorDark(color)
-                .fieldColorLight(color)
-                .innerBorderColorLight(color)
-                .InnerBorderColorDark(color)
-                .wallColorDark(Color.BLUE)
-                .wallColorLight(Color.BLUE)
-                .outerBorderColorDark(Color.BLUE)
-                .outerBorderColorLight(Color.BLUE)
-                .coinColorDark(color)
-                .coinColorLight(color)
-                .build()
-        );
-        World.getGlobalWorld().getGuiPanel().updateGui();
+    public void stopGame(boolean winner) {
     }
 
     /**
@@ -75,18 +46,23 @@ public abstract class GameControllerTemplate {
     }
 
     public void setupTheme() {
+        //noinspection UnstableApiUsage
+        World.getGlobalWorld().getGuiPanel().setColorProfile(
+            ColorProfile.DEFAULT.toBuilder()
+                .customFieldColorPattern(
+                    (cp, p) -> (p.x + p.y) % 2 == 0 ? cp.fieldColorLight() : cp.fieldColorDark()
+                )
+                .build()
+        );
+        //noinspection UnstableApiUsage
         World.getGlobalWorld().getGuiPanel().setColorProfile(
             ColorProfile.DEFAULT.toBuilder()
                 .backgroundColorDark(Color.BLACK)
                 .backgroundColorLight(Color.BLACK)
-                .fieldColorDark(Color.BLACK)
-                .fieldColorLight(Color.BLACK)
                 .innerBorderColorLight(Color.BLACK)
                 .InnerBorderColorDark(Color.BLACK)
-                .wallColorDark(Color.BLUE)
-                .wallColorLight(Color.BLUE)
-                .outerBorderColorDark(Color.BLUE)
-                .outerBorderColorLight(Color.BLUE)
+                .outerBorderColorDark(Color.BLACK)
+                .outerBorderColorLight(Color.BLACK)
                 .build()
         );
     }
