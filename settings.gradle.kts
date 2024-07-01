@@ -4,6 +4,7 @@ dependencyResolutionManagement {
 //        mavenLocal()
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
         mavenCentral()
+        maven("https://jitpack.io")
     }
 }
 
