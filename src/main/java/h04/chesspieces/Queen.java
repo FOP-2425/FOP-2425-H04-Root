@@ -8,7 +8,7 @@ import h04.template.ChessUtils;
 
 import java.awt.Point;
 
-public class Queen extends Robot implements ChessPiece, OrthogonalMover, DiagonalMover {
+public class Queen extends Robot implements OrthogonalMover, DiagonalMover {
     private final Team team;
 
     public Queen(final int x, final int y, final Team team) {
@@ -22,7 +22,7 @@ public class Queen extends Robot implements ChessPiece, OrthogonalMover, Diagona
     }
 
     @Override
-    public void moveStrategy(int dx, int dy, MoveStrategy strategy) {
+    public void moveStrategy(final int dx, final int dy, final MoveStrategy strategy) {
         strategy.move(this, dx, dy);
     }
 

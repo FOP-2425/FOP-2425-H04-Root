@@ -15,7 +15,7 @@ public interface DiagonalMover extends ChessPiece {
                 new Point(1, -1),
                 new Point(-1, -1)
             },
-            3
+            7
         );
     }
 }

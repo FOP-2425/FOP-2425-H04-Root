@@ -20,11 +20,11 @@ public class WalkingMoveStrategy implements MoveStrategy {
         }
         while (dy != 0) {
             if (dy > 0) {
-                turnToDirection(r, Direction.DOWN);
+                turnToDirection(r, Direction.UP);
                 r.move();
                 dy--;
             } else {
-                turnToDirection(r, Direction.UP);
+                turnToDirection(r, Direction.DOWN);
                 r.move();
                 dy++;
             }

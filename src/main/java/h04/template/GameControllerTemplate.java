@@ -1,32 +1,46 @@
 package h04.template;
 
-import fopbot.*;
+import fopbot.ColorProfile;
 import fopbot.Robot;
-import h04.*;
+import fopbot.World;
+import h04.GameController;
+import h04.InputHandler;
+import h04.chesspieces.Bishop;
 import h04.chesspieces.ChessPiece;
 import h04.chesspieces.King;
+import h04.chesspieces.Knight;
+import h04.chesspieces.Pawn;
+import h04.chesspieces.Queen;
+import h04.chesspieces.Rook;
 import h04.chesspieces.Team;
+import h04.movement.MoveStrategy;
+import h04.movement.WalkingMoveStrategy;
+import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A {@link GameControllerTemplate} controls the game loop and the {@link Robot}s and checks the win condition.
  */
 public abstract class GameControllerTemplate {
     /**
-     * The {@link GameInputHandler} that handles the input of the user.
+     * The {@link InputHandler} that handles the input of the user.
      */
-    private final GameInputHandler inputHandler = new GameInputHandler();
+    private final InputHandler inputHandler = new InputHandler((GameController) this);
 
     /**
      * The {@link Robot}s that are controlled by the {@link GameControllerTemplate}.
      */
-    protected final ArrayList<Robot> allPieces = new ArrayList<>();
 
-    private Team nextToMove = Team.WHITE;
+    protected Team nextToMove = Team.WHITE;
 
-    private boolean gameOver = false;
+    protected boolean gameOver = false;
+
+    protected @Nullable ChessPiece selectedPiece;
+
+    protected MoveStrategy moveStrategy = new WalkingMoveStrategy();
 
 
     /**
@@ -35,20 +49,62 @@ public abstract class GameControllerTemplate {
     public void startGame() {
         System.out.println("Starting game...");
 
-        while(!gameOver) {
-            inputHandler.waitForMove(nextToMove);
-            if(checkWinCondition()) stopGame(nextToMove);
+        while (!gameOver) {
+            final var point = inputHandler.getNextInput(nextToMove);
+            if (ChessUtils.getTeamAt(point) == nextToMove) {
+                // select piece
+                selectedPiece = ChessUtils.getPieceAt(point);
+                //highlight possible moves
+                final var possibleMoves = Objects.requireNonNull(selectedPiece).getPossibleMoveFields();
+                ChessUtils.resetFieldColor();
+                ChessUtils.colorMoveFields(possibleMoves);
+                continue;
+            }
+            if (selectedPiece != null) {
+                // check if piece can move to point
+                final var possibleMoves = selectedPiece.getPossibleMoveFields();
+                if (Arrays.stream(possibleMoves)
+                    .filter(Objects::nonNull)
+                    .noneMatch(point::equals)
+                ) {
+                    System.out.println("Invalid move");
+                    // deselect piece
+                    selectedPiece = null;
+                    ChessUtils.resetFieldColor();
+                    continue;
+                }
+                // valid move selected, move piece
+                final var oldPiece = ChessUtils.getPieceAt(point);
+                selectedPiece.moveStrategy(
+                    point.x - selectedPiece.getX(),
+                    point.y - selectedPiece.getY(),
+                    moveStrategy
+                );
+                if (oldPiece != null) {
+                    oldPiece.turnOff();
+                }
+                if (selectedPiece instanceof Pawn && (selectedPiece.getY() == 0 || selectedPiece.getY() == World.getHeight() - 1)) {
+                    selectedPiece.turnOff();
+                    new Queen(selectedPiece.getX(), selectedPiece.getY(), selectedPiece.getTeam());
+                }
+                ChessUtils.resetFieldColor();
+                if (checkWinCondition()) stopGame(nextToMove);
 
-            nextToMove = nextToMove.getOpponent();
+
+                nextToMove = nextToMove.getOpponent();
+            }
         }
     }
 
     public abstract boolean checkWinCondition();
 
+
     /**
      * Stops the game loop.
      */
-    public void stopGame(Team winner) {
+    public void stopGame(final Team winner) {
+        gameOver = true;
+        inputHandler.setStatusText(winner.name() + " wins!");
     }
 
     /**
@@ -57,6 +113,7 @@ public abstract class GameControllerTemplate {
     protected void setup() {
         setupWorld();
         setupTheme();
+        setupPieces();
         //this.inputHandler.install();
     }
 
@@ -64,18 +121,15 @@ public abstract class GameControllerTemplate {
         //noinspection UnstableApiUsage
         World.getGlobalWorld().getGuiPanel().setColorProfile(
             ColorProfile.DEFAULT.toBuilder()
+                .fieldColorLight(Color.decode("#e0ba97"))
+                .fieldColorDark(Color.decode("#8d4d2a"))
                 .customFieldColorPattern(
                     (cp, p) -> (p.x + p.y) % 2 == 0 ? cp.fieldColorLight() : cp.fieldColorDark()
                 )
-                .build()
-        );
-        //noinspection UnstableApiUsage
-        World.getGlobalWorld().getGuiPanel().setColorProfile(
-            ColorProfile.DEFAULT.toBuilder()
-                .backgroundColorDark(Color.BLACK)
-                .backgroundColorLight(Color.BLACK)
-                .innerBorderColorLight(Color.BLACK)
-                .InnerBorderColorDark(Color.BLACK)
+                .backgroundColorDark(Color.decode("#8d4d2a"))
+                .backgroundColorLight(Color.decode("#8d4d2a"))
+                .innerBorderColorLight(new Color(0, 0, 0, 0))
+                .innerBorderColorDark(new Color(0, 0, 0, 0))
                 .outerBorderColorDark(Color.BLACK)
                 .outerBorderColorLight(Color.BLACK)
                 .build()
@@ -91,20 +145,28 @@ public abstract class GameControllerTemplate {
         World.setDelay(0);
         World.setVisible(true);
         World.getGlobalWorld().setDrawTurnedOffRobots(false);
+        inputHandler.install();
     }
 
-    public King[] getKings() {
-        return allPieces.stream()
-            .filter(King.class::isInstance)
-            .map(King.class::cast)
-            .toArray(King[]::new);
+    public void setupPieces() {
+        for (final int y : new int[]{0, 1, World.getHeight() - 2, World.getHeight() - 1}) {
+            for (int x = 0; x < World.getWidth(); x++) {
+                if (y == 1 || y == World.getHeight() - 2)
+                    new Pawn(x, y, y == 1 ? Team.WHITE : Team.BLACK);
+                else if (x == 0 || x == World.getWidth() - 1) {
+                    new Rook(x, y, y == 0 ? Team.WHITE : Team.BLACK);
+                } else if (x == 1 || x == World.getWidth() - 2) {
+                    new Knight(x, y, y == 0 ? Team.WHITE : Team.BLACK);
+                } else if (x == 2 || x == World.getWidth() - 3) {
+                    new Bishop(x, y, y == 0 ? Team.WHITE : Team.BLACK);
+                } else if (x == 3) {
+                    new Queen(x, y, y == 0 ? Team.WHITE : Team.BLACK);
+                } else if (x == World.getWidth() - 4) {
+                    new King(x, y, y == 0 ? Team.WHITE : Team.BLACK);
+                }
+            }
+        }
     }
 
-    public ChessPiece getPieceAt(Point p) {
-        return (ChessPiece) World.getGlobalWorld().getAllFieldEntities().stream()
-            .filter(Robot.class::isInstance)
-            .map(Robot.class::cast)
-            .filter(piece -> piece.getX() == p.x && piece.getY() == p.y && !piece.isTurnedOff())
-            .findFirst().orElse(null);
-    }
+
 }

@@ -2,6 +2,7 @@ package h04.chesspieces;
 
 import fopbot.Robot;
 import h04.movement.MoveStrategy;
+import h04.template.ChessUtils;
 
 import java.awt.Point;
 
@@ -20,12 +21,25 @@ public class King extends Robot implements ChessPiece {
     }
 
     @Override
-    public void moveStrategy(int dx, int dy, MoveStrategy strategy) {
+    public void moveStrategy(final int dx, final int dy, final MoveStrategy strategy) {
 
     }
 
     @Override
     public Point[] getPossibleMoveFields() {
-        return new Point[0];
+        return ChessUtils.getAllowedMoves(
+            this,
+            new Point[]{
+                new Point(1, 0),
+                new Point(-1, 0),
+                new Point(0, 1),
+                new Point(0, -1),
+                new Point(1, 1),
+                new Point(-1, 1),
+                new Point(1, -1),
+                new Point(-1, -1)
+            },
+            1
+        );
     }
 }
