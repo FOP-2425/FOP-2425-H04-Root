@@ -29,14 +29,15 @@ public class Knight extends Robot implements ChessPiece {
     public Point[] getPossibleMoveFields() {
         final Point[] possibleMoves = new Point[4];
         int index = 0;
-        final Point delta = new Point(1, 2);
-        for (int i = 0; i < 4; i++) {
-            final Point move = new Point(getX() + delta.x, getY() + delta.y);
-            if (ChessUtils.isValidCoordinate(move) && ChessUtils.getTeamAt(move) != getTeam()) {
-                possibleMoves[index++] = move;
+        for (final Point delta : new Point[]{new Point(1, 2), new Point(2, 1)}) {
+            for (int i = 0; i < 4; i++) {
+                final Point move = new Point(getX() + delta.x, getY() + delta.y);
+                if (ChessUtils.isValidCoordinate(move) && ChessUtils.getTeamAt(move) != getTeam()) {
+                    possibleMoves[index++] = move;
+                }
+                //noinspection SuspiciousNameCombination
+                delta.setLocation(-delta.y, delta.x);
             }
-            //noinspection SuspiciousNameCombination
-            delta.setLocation(-delta.y, delta.x);
         }
         return possibleMoves;
     }
