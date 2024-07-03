@@ -119,7 +119,7 @@ public abstract class GameControllerTemplate {
 
     public void setupTheme() {
         //noinspection UnstableApiUsage
-        World.getGlobalWorld().getGuiPanel().setColorProfile(
+        World.getGlobalWorld().setColorProfile(
             ColorProfile.DEFAULT.toBuilder()
                 .fieldColorLight(Color.decode("#e0ba97"))
                 .fieldColorDark(Color.decode("#8d4d2a"))
@@ -130,6 +130,7 @@ public abstract class GameControllerTemplate {
                 .backgroundColorLight(Color.decode("#8d4d2a"))
                 .innerBorderColorLight(new Color(0, 0, 0, 0))
                 .innerBorderColorDark(new Color(0, 0, 0, 0))
+                .fieldBorderThickness(0)
                 .outerBorderColorDark(Color.BLACK)
                 .outerBorderColorLight(Color.BLACK)
                 .build()
