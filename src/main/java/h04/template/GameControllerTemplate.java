@@ -14,8 +14,10 @@ import h04.chesspieces.Queen;
 import h04.chesspieces.Rook;
 import h04.chesspieces.Team;
 import h04.movement.MoveStrategy;
+import h04.movement.TeleportingMoveStrategy;
 import h04.movement.WalkingMoveStrategy;
 import org.jetbrains.annotations.Nullable;
+import org.tudalgo.algoutils.student.io.PropertyUtils;
 
 import java.awt.Color;
 import java.util.Arrays;
@@ -40,7 +42,10 @@ public abstract class GameControllerTemplate {
 
     protected @Nullable ChessPiece selectedPiece;
 
-    protected MoveStrategy moveStrategy = new WalkingMoveStrategy();
+    protected MoveStrategy moveStrategy = PropertyUtils.getBooleanProperty(
+        "h04.properties",
+        "USE_TELEPORT_MOVE_STRATEGY"
+    ) ? new TeleportingMoveStrategy() : new WalkingMoveStrategy();
 
 
     /**
