@@ -27,7 +27,7 @@ public class Knight extends Robot implements ChessPiece {
 
     @Override
     public Point[] getPossibleMoveFields() {
-        final Point[] possibleMoves = new Point[4];
+        final Point[] possibleMoves = new Point[8];
         int index = 0;
         for (final Point delta : new Point[]{new Point(1, 2), new Point(2, 1)}) {
             for (int i = 0; i < 4; i++) {
