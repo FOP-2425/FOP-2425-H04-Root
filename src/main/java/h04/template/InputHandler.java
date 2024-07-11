@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import javax.swing.JLabel;
 import java.beans.PropertyChangeEvent;
 
-public abstract class InputHandlerTemplate {
+public class InputHandler {
     /**
      * The input queue.
      */
@@ -21,7 +21,7 @@ public abstract class InputHandlerTemplate {
 
     private final JLabel statusLabel = new JLabel("");
 
-    public InputHandlerTemplate(final GameController controller) {
+    public InputHandler(final GameController controller) {
         this.controller = controller;
     }
 

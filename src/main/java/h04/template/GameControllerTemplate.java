@@ -4,7 +4,7 @@ import fopbot.ColorProfile;
 import fopbot.Robot;
 import fopbot.World;
 import h04.GameController;
-import h04.InputHandler;
+import h04.template.InputHandler;
 import h04.chesspieces.Bishop;
 import h04.chesspieces.ChessPiece;
 import h04.chesspieces.King;
