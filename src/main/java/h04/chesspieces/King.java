@@ -22,7 +22,7 @@ public class King extends Robot implements ChessPiece {
 
     @Override
     public void moveStrategy(final int dx, final int dy, final MoveStrategy strategy) {
-
+        strategy.move(this, dx, dy);
     }
 
     @Override
