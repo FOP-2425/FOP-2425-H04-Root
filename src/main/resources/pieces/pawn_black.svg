@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16.68mm"
+   height="22.1mm"
+   viewBox="0 0 16.679999 22.100002"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="Pawn.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2"
+     inkscape:cx="-66.25"
+     inkscape:cy="97.25"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="m 1.0591685,21.100011 c -0.022754,-0.273262 -0.034152,-0.808408 -0.034152,-1.605412 0,-2.869142 0.8881004,-4.998509 2.664354,-6.387571 0.5237427,-0.432673 1.1613356,-0.831162 1.9128316,-1.19552 C 4.7141013,11.638246 4.1106397,10.966469 3.7918432,9.8962032 3.7007551,9.5546259 3.655215,9.2016719 3.655215,8.8373139 c 0,-1.525719 0.7856273,-2.607363 2.3568821,-3.24485 -0.409919,-0.683154 -0.614865,-1.33215 -0.614839,-1.946989 -2.9e-5,-1.024731 0.500962,-1.787578 1.502939,-2.288566 0.455401,-0.227719 0.944986,-0.3415769 1.468782,-0.3415769 1.138555,0 1.9811199,0.4440499 2.5276699,1.3321499 0.25046,0.387112 0.375708,0.819785 0.375735,1.297993 -2.7e-5,0.660374 -0.193588,1.30937 -0.580681,1.946989 0.842539,0.341577 1.445974,0.797005 1.810358,1.366309 0.364332,0.614838 0.546497,1.241054 0.546524,1.878674 -3.7e-5,1.1841161 -0.409919,2.0836201 -1.229678,2.6984851 -0.204975,0.182176 -0.432699,0.307419 -0.683154,0.375735 2.094971,1.070266 3.449902,2.470732 4.064794,4.201318 0.31877,0.956416 0.478181,2.083621 0.478208,3.38164 -2.7e-5,0.797004 -0.0114,1.332151 -0.03415,1.605412 H 1.0591817"
+       id="path6"
+       style="stroke-width:0.264583" />
+  </g>
+</svg>
