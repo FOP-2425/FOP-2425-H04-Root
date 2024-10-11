@@ -1,5 +1,8 @@
 package h04;
 
+import h04.movement.MoveStrategyTest;
+import h04.movement.TeleportingMoveStrategyTest;
+import h04.movement.WalkingMoveStrategyTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import static org.tudalgo.algoutils.tutor.general.jagr.RubricUtils.criterion;
 
@@ -19,23 +22,30 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_2_1 = Criterion.builder()
         .shortDescription("H4.2.1 | MoveStrategy Interface")
         .addChildCriteria(
-            criterion("Das MoveStrategy-Interface ist korrekt implementiert.")
+            criterion("Das MoveStrategy-Interface ist korrekt implementiert.",
+                JUnitTestRef.ofMethod(() -> MoveStrategyTest.class.getDeclaredMethod("testDeclaration")))
         )
         .build();
 
     private static final Criterion H4_2_2 = Criterion.builder()
         .shortDescription("H4.2.2 | TeleportingMoveStrategy")
         .addChildCriteria(
-            criterion("Die TeleportingMoveStrategy-Klasse ist korrekt implementiert.", 2)
+            criterion("Die TeleportingMoveStrategy-Klasse ist korrekt deklariert.",
+                JUnitTestRef.ofMethod(() -> TeleportingMoveStrategyTest.class.getDeclaredMethod("testClassHeader"))),
+            criterion("Methode move(Robot, int, int) ist korrekt implementiert.",
+                JUnitTestRef.ofMethod(() -> TeleportingMoveStrategyTest.class.getDeclaredMethod("testMove", int.class)))
         )
         .build();
 
     private static final Criterion H4_2_3 = Criterion.builder()
         .shortDescription("H4.2.3 | WalkingMoveStrategy")
         .addChildCriteria(
-            criterion("Die WalkingMoveStrategy-Klasse implementiert das MoveStrategy-Interface korrekt."),
-            criterion("Der Roboter bewegt sich korrekt."),
-            criterion("Der Roboter schaut nach der Bewegung in die richtige Richtung.")
+            criterion("Die WalkingMoveStrategy-Klasse implementiert das MoveStrategy-Interface korrekt.",
+                JUnitTestRef.ofMethod(() -> WalkingMoveStrategyTest.class.getDeclaredMethod("testClassHeader"))),
+            criterion("Der Roboter bewegt sich korrekt.",
+                JUnitTestRef.ofMethod(() -> WalkingMoveStrategyTest.class.getDeclaredMethod("testMove", int.class))),
+            criterion("Der Roboter schaut nach der Bewegung in die richtige Richtung.",
+                JUnitTestRef.ofMethod(() -> WalkingMoveStrategyTest.class.getDeclaredMethod("testMoveFacesUp", int.class)))
         )
         .build();
 
