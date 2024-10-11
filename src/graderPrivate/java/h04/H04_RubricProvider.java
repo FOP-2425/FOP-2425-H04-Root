@@ -1,9 +1,14 @@
 package h04;
 
+import h04.chesspieces.ChessPieceTest;
 import h04.movement.MoveStrategyTest;
 import h04.movement.TeleportingMoveStrategyTest;
 import h04.movement.WalkingMoveStrategyTest;
-import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.rubric.Criterion;
+import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
+import org.sourcegrade.jagr.api.rubric.Rubric;
+import org.sourcegrade.jagr.api.rubric.RubricProvider;
+
 import static org.tudalgo.algoutils.tutor.general.jagr.RubricUtils.criterion;
 
 @SuppressWarnings("unused")
@@ -57,8 +62,10 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_3 = Criterion.builder()
         .shortDescription("H4.3 | ChessPiece Interface")
         .addChildCriteria(
-            criterion("Das ChessPiece-Interface ist korrekt implementiert."),
-            criterion("Die Methoden moveStrategy und getPossibleMoveFields sind korrekt implementiert.")
+            criterion("Methode moveStrategy(int, int, MoveStrategy) ist korrekt deklariert.",
+                JUnitTestRef.ofMethod(() -> ChessPieceTest.class.getDeclaredMethod("testMoveStrategyDeclaration"))),
+            criterion("Methode getPossibleMoveFields() ist korrekt deklariert.",
+                JUnitTestRef.ofMethod(() -> ChessPieceTest.class.getDeclaredMethod("testGetPossibleMoveFieldDeclaration")))
         )
         .build();
 
