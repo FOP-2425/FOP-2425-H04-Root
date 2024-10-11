@@ -81,11 +81,16 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_4_2 = Criterion.builder()
         .shortDescription("H4.4.2 | King getPossibleMoveFields")
         .addChildCriteria(
-            criterion("Die Methode getPossibleMoveFields gibt ein eindimensionales Array von Point zurück."),
-            criterion("Die Methode gibt nicht mehr als die korrekte Anzahl an Feldern zurück."),
-            criterion("Die Methode gibt keine Felder zurück, auf denen sich ein eigener König befindet."),
-            criterion("Die Methode gibt keine Felder zurück, die außerhalb des Spielfelds liegen."),
-            criterion("Die Methode gibt die korrekten Felder zurück, auf die der König ziehen kann.")
+            criterion("Die Methode getPossibleMoveFields ist korrekt deklariert.",
+                JUnitTestRef.ofMethod(() -> KingTest.class.getDeclaredMethod("testGetPossibleMoveFieldsHeader"))),
+            criterion("Die Methode gibt nicht mehr als die korrekte Anzahl an Feldern zurück.",
+                JUnitTestRef.ofMethod(() -> KingTest.class.getDeclaredMethod("testGetPossibleMoveFieldsCorrectAmount"))),
+            criterion("Die Methode gibt keine Felder zurück, auf denen sich ein eigener König befindet.",
+                JUnitTestRef.ofMethod(() -> KingTest.class.getDeclaredMethod("testGetPossibleMoveFieldsExcludesSelf"))),
+            criterion("Die Methode gibt keine Felder zurück, die außerhalb des Spielfelds liegen.",
+                JUnitTestRef.ofMethod(() -> KingTest.class.getDeclaredMethod("testGetPossibleMoveFieldsInWorld"))),
+            criterion("Die Methode gibt die korrekten Felder zurück, auf die der König ziehen kann.",
+                JUnitTestRef.ofMethod(() -> KingTest.class.getDeclaredMethod("testGetPossibleMoveFieldsCorrect")))
         )
         .build();
 
