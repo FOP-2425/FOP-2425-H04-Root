@@ -9,8 +9,10 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_1 = Criterion.builder()
         .shortDescription("H4.1 | Das Ende kommt zuerst")
         .addChildCriteria(
-            criterion("Die Könige werden korrekt gespeichert."),
-            criterion("Die Methode checkWinCondition() gibt true zurück, wenn ein König geschlagen wurde, ansonsten false.")
+            criterion("Die Könige werden mittels ChessUtils.getKings abgerufen.",
+                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testCheckWinConditionCallsChessUtils"))),
+            criterion("Die Methode checkWinCondition() gibt true zurück, wenn ein König geschlagen wurde, ansonsten false.",
+                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testCheckWinCondition", int.class)))
         )
         .build();
 
