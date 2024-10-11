@@ -1,6 +1,7 @@
 package h04;
 
 import h04.chesspieces.ChessPieceTest;
+import h04.chesspieces.KingTest;
 import h04.movement.MoveStrategyTest;
 import h04.movement.TeleportingMoveStrategyTest;
 import h04.movement.WalkingMoveStrategyTest;
@@ -72,7 +73,8 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_4_1 = Criterion.builder()
         .shortDescription("H4.4.1 | King MoveStrategy")
         .addChildCriteria(
-            criterion("Die Methode moveStrategy ist korrekt implementiert.", 2)
+            criterion("Die Methode moveStrategy ist korrekt implementiert.", 2,
+                JUnitTestRef.ofMethod(() -> KingTest.class.getDeclaredMethod("testMoveStrategy")))
         )
         .build();
 
