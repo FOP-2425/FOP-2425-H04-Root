@@ -61,6 +61,18 @@ public class Links {
             () -> BasicTypeLink.of(int.class), () -> BasicTypeLink.of(int.class), MOVE_STRATEGY_LINK);
     public static final Supplier<MethodLink> KING_GET_POSSIBLE_MOVE_FIELDS_LINK = getMethodLink(KING_LINK, "getPossibleMoveFields");
 
+    // Class h04.chesspieces.Rook
+    public static final Supplier<TypeLink> ROOK_LINK = getTypeLinkByName(CHESSPIECES_PACKAGE_LINK, "Rook");
+    public static final Supplier<MethodLink> ROOK_MOVE_STRATEGY_LINK = getMethodLink(ROOK_LINK, "moveStrategy",
+            () -> BasicTypeLink.of(int.class), () -> BasicTypeLink.of(int.class), MOVE_STRATEGY_LINK);
+    public static final Supplier<MethodLink> ROOK_GET_POSSIBLE_MOVE_FIELDS_LINK = getMethodLink(ROOK_LINK, "getPossibleMoveFields");
+
+    // Class h04.chesspieces.Bishop
+    public static final Supplier<TypeLink> BISHOP_LINK = getTypeLinkByName(CHESSPIECES_PACKAGE_LINK, "Bishop");
+    public static final Supplier<MethodLink> BISHOP_MOVE_STRATEGY_LINK = getMethodLink(BISHOP_LINK, "moveStrategy",
+            () -> BasicTypeLink.of(int.class), () -> BasicTypeLink.of(int.class), MOVE_STRATEGY_LINK);
+    public static final Supplier<MethodLink> BISHOP_GET_POSSIBLE_MOVE_FIELDS_LINK = getMethodLink(BISHOP_LINK, "getPossibleMoveFields");
+
     private static Supplier<TypeLink> getTypeLinkByName(Supplier<PackageLink> packageLinkSupplier, String name) {
         return Suppliers.memoize(() -> packageLinkSupplier.get().getType(Matcher.of(typeLink -> typeLink.name().equals(name))));
     }

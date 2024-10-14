@@ -1,7 +1,9 @@
 package h04;
 
+import h04.chesspieces.BishopTest;
 import h04.chesspieces.ChessPieceTest;
 import h04.chesspieces.KingTest;
+import h04.chesspieces.RookTest;
 import h04.movement.*;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
@@ -117,11 +119,23 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_5_2 = Criterion.builder()
         .shortDescription("H4.5.2 | Rook and Bishop")
         .addChildCriteria(
-            criterion("Die Rook-Klasse implementiert das OrthogonalMover-Interface korrekt."),
-            criterion("Die Methoden moveStrategy und getPossibleMoveFields der Klasse Rook sind korrekt implementiert."),
-            criterion("Die Bishop-Klasse implementiert das DiagonalMover-Interface korrekt."),
-            criterion("Die Methoden moveStrategy und getPossibleMoveFields der Klasse Bishop sind korrekt implementiert."),
-            criterion("Beide Klassen sind vollständig korrekt implementiert.")
+            criterion("Die Rook-Klasse implementiert das OrthogonalMover-Interface korrekt.",
+                JUnitTestRef.ofMethod(() -> RookTest.class.getDeclaredMethod("testClassHeader"))),
+            criterion("Die Methoden moveStrategy und getPossibleMoveFields der Klasse Rook sind korrekt implementiert.",
+                JUnitTestRef.ofMethod(() -> RookTest.class.getDeclaredMethod("testMoveStrategy")),
+                JUnitTestRef.ofMethod(() -> RookTest.class.getDeclaredMethod("testGetPossibleMoveFields"))),
+            criterion("Die Bishop-Klasse implementiert das DiagonalMover-Interface korrekt.",
+                JUnitTestRef.ofMethod(() -> BishopTest.class.getDeclaredMethod("testClassHeader"))),
+            criterion("Die Methoden moveStrategy und getPossibleMoveFields der Klasse Bishop sind korrekt implementiert.",
+                JUnitTestRef.ofMethod(() -> BishopTest.class.getDeclaredMethod("testMoveStrategy")),
+                JUnitTestRef.ofMethod(() -> BishopTest.class.getDeclaredMethod("testGetPossibleMoveFields"))),
+            criterion("Beide Klassen sind vollständig korrekt implementiert.",
+                JUnitTestRef.ofMethod(() -> RookTest.class.getDeclaredMethod("testClassHeader")),
+                JUnitTestRef.ofMethod(() -> RookTest.class.getDeclaredMethod("testMoveStrategy")),
+                JUnitTestRef.ofMethod(() -> RookTest.class.getDeclaredMethod("testGetPossibleMoveFields")),
+                JUnitTestRef.ofMethod(() -> BishopTest.class.getDeclaredMethod("testClassHeader")),
+                JUnitTestRef.ofMethod(() -> BishopTest.class.getDeclaredMethod("testMoveStrategy")),
+                JUnitTestRef.ofMethod(() -> BishopTest.class.getDeclaredMethod("testGetPossibleMoveFields")))
         )
         .build();
 
