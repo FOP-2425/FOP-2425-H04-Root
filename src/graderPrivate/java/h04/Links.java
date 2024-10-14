@@ -73,6 +73,10 @@ public class Links {
             () -> BasicTypeLink.of(int.class), () -> BasicTypeLink.of(int.class), MOVE_STRATEGY_LINK);
     public static final Supplier<MethodLink> BISHOP_GET_POSSIBLE_MOVE_FIELDS_LINK = getMethodLink(BISHOP_LINK, "getPossibleMoveFields");
 
+    // Class h04.chesspieces.Bishop
+    public static final Supplier<TypeLink> QUEEN_LINK = getTypeLinkByName(CHESSPIECES_PACKAGE_LINK, "Queen");
+    public static final Supplier<MethodLink> QUEEN_GET_POSSIBLE_MOVE_FIELDS_LINK = getMethodLink(QUEEN_LINK, "getPossibleMoveFields");
+
     private static Supplier<TypeLink> getTypeLinkByName(Supplier<PackageLink> packageLinkSupplier, String name) {
         return Suppliers.memoize(() -> packageLinkSupplier.get().getType(Matcher.of(typeLink -> typeLink.name().equals(name))));
     }

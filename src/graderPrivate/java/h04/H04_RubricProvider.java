@@ -1,9 +1,6 @@
 package h04;
 
-import h04.chesspieces.BishopTest;
-import h04.chesspieces.ChessPieceTest;
-import h04.chesspieces.KingTest;
-import h04.chesspieces.RookTest;
+import h04.chesspieces.*;
 import h04.movement.*;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
@@ -147,9 +144,12 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_6 = Criterion.builder()
         .shortDescription("H4.6 | Queen")
         .addChildCriteria(
-            criterion("Die Queen-Klasse implementiert das OrthogonalMover- und DiagonalMover-Interface korrekt."),
-            criterion("Die Methode getPossibleMoveFields gibt die korrekten Felder zurück.", 2),
-            criterion("Die Rückgaben der Methoden getOrthogonalMoves und getDiagonalMoves werden korrekt kombiniert.", 2)
+            criterion("Die Queen-Klasse implementiert das OrthogonalMover- und DiagonalMover-Interface korrekt.",
+                JUnitTestRef.ofMethod(() -> QueenTest.class.getDeclaredMethod("testClassHeader"))),
+            criterion("Die Methode getPossibleMoveFields gibt die korrekten Felder zurück.", 2,
+                JUnitTestRef.ofMethod(() -> QueenTest.class.getDeclaredMethod("testGetPossibleMoveFields_Correct"))),
+            criterion("Die Rückgaben der Methoden getOrthogonalMoves und getDiagonalMoves werden korrekt kombiniert.", 2,
+                JUnitTestRef.ofMethod(() -> QueenTest.class.getDeclaredMethod("testGetPossibleMoveFields_Combine")))
         )
         .build();
 
