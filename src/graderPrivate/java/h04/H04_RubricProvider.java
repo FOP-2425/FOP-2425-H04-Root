@@ -2,9 +2,7 @@ package h04;
 
 import h04.chesspieces.ChessPieceTest;
 import h04.chesspieces.KingTest;
-import h04.movement.MoveStrategyTest;
-import h04.movement.TeleportingMoveStrategyTest;
-import h04.movement.WalkingMoveStrategyTest;
+import h04.movement.*;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
@@ -102,11 +100,17 @@ public class H04_RubricProvider implements RubricProvider {
     private static final Criterion H4_5_1 = Criterion.builder()
         .shortDescription("H4.5.1 | OrthogonalMover and DiagonalMover")
         .addChildCriteria(
-            criterion("Die Methode getOrthogonalMoves wird korrekt hinzugefügt."),
-            criterion("Die Methode getOrthogonalMoves gibt die korrekten Felder zurück."),
-            criterion("Die Methode getDiagonalMoves wird korrekt hinzugefügt."),
-            criterion("Die Methode getDiagonalMoves gibt die korrekten Felder zurück."),
-            criterion("Die Methoden erweitern korrekt das Interface ChessPiece.")
+            criterion("Die Methode getOrthogonalMoves wird korrekt hinzugefügt.",
+                JUnitTestRef.ofMethod(() -> OrthogonalMoverTest.class.getDeclaredMethod("testMethodHeader"))),
+            criterion("Die Methode getOrthogonalMoves gibt die korrekten Felder zurück.",
+                JUnitTestRef.ofMethod(() -> OrthogonalMoverTest.class.getDeclaredMethod("testGetOrthogonalMoves"))),
+            criterion("Die Methode getDiagonalMoves wird korrekt hinzugefügt.",
+                JUnitTestRef.ofMethod(() -> DiagonalMoverTest.class.getDeclaredMethod("testMethodHeader"))),
+            criterion("Die Methode getDiagonalMoves gibt die korrekten Felder zurück.",
+                JUnitTestRef.ofMethod(() -> DiagonalMoverTest.class.getDeclaredMethod("testGetDiagonalMoves"))),
+            criterion("OrthogonalMover und DiagonalMover erweitern beide das Interface ChessPiece.",
+                JUnitTestRef.ofMethod(() -> OrthogonalMoverTest.class.getDeclaredMethod("testClassHeader")),
+                JUnitTestRef.ofMethod(() -> DiagonalMoverTest.class.getDeclaredMethod("testClassHeader")))
         )
         .build();
 

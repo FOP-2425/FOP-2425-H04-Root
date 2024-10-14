@@ -48,6 +48,9 @@ public class Links {
 
     // Interface h04.chesspieces.ChessPiece
     public static final Supplier<TypeLink> CHESS_PIECE_LINK = getTypeLinkByName(CHESSPIECES_PACKAGE_LINK, "ChessPiece");
+    public static final Supplier<MethodLink> CHESS_PIECE_GET_TEAM_LINK = getMethodLink(CHESS_PIECE_LINK, "getTeam");
+    public static final Supplier<MethodLink> CHESS_PIECE_GET_X_LINK = getMethodLink(CHESS_PIECE_LINK, "getX");
+    public static final Supplier<MethodLink> CHESS_PIECE_GET_Y_LINK = getMethodLink(CHESS_PIECE_LINK, "getY");
     public static final Supplier<MethodLink> CHESS_PIECE_MOVE_STRATEGY_LINK = getMethodLink(CHESS_PIECE_LINK, "moveStrategy",
             () -> BasicTypeLink.of(int.class), () -> BasicTypeLink.of(int.class), MOVE_STRATEGY_LINK);
     public static final Supplier<MethodLink> CHESS_PIECE_GET_POSSIBLE_MOVE_FIELDS_LINK = getMethodLink(CHESS_PIECE_LINK, "getPossibleMoveFields");
