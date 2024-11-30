@@ -38,7 +38,7 @@ public class Pawn extends Robot implements ChessPiece {
         if (isValidCoordinate(front1) && getTeamAt(front1) == null) {
             possibleMoves[index++] = front1;
             final Point front2 = new Point(getX(), getY() + 2 * direction);
-            if (firstMove && getTeamAt(front2) != null) {
+            if (firstMove && isValidCoordinate(front2) && getTeamAt(front2) == null) {
                 possibleMoves[index++] = front2;
             }
         }
