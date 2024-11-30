@@ -6,6 +6,8 @@ import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.tudalgo.algoutils.transform.SolutionMergingClassTransformer;
 
 import static org.tudalgo.algoutils.tutor.general.jagr.RubricUtils.criterion;
 
@@ -156,8 +158,34 @@ public class H04_RubricProvider implements RubricProvider {
     @Override
     public Rubric getRubric() {
         return Rubric.builder()
-            .title("H04 | <To be named>")  // TODO: replace with name when final
+            .title("H04 | Schach")
             .addChildCriteria(H4_1, H4_2, H4_3, H4_4, H4_5, H4_6)
             .build();
+    }
+
+    @Override
+    public void configure(RubricConfiguration configuration) {
+        configuration.addTransformer(() -> new SolutionMergingClassTransformer.Builder("h04")
+            .addSolutionClass("h04.chesspieces.Bishop")
+            .addSolutionClass("h04.chesspieces.ChessPiece")
+            .addSolutionClass("h04.chesspieces.Families")
+            .addSolutionClass("h04.chesspieces.King")
+            .addSolutionClass("h04.chesspieces.Knight")
+            .addSolutionClass("h04.chesspieces.Pawn")
+            .addSolutionClass("h04.chesspieces.Queen")
+            .addSolutionClass("h04.chesspieces.Rook")
+            .addSolutionClass("h04.chesspieces.Team")
+            .addSolutionClass("h04.movement.DiagonalMover")
+            .addSolutionClass("h04.movement.MoveStrategy")
+            .addSolutionClass("h04.movement.OrthogonalMover")
+            .addSolutionClass("h04.movement.TeleportingMoveStrategy")
+            .addSolutionClass("h04.movement.WalkingMoveStrategy")
+            .addSolutionClass("h04.template.ChessUtils")
+            .addSolutionClass("h04.template.GameControllerTemplate")
+            .addSolutionClass("h04.template.InputHandler")
+            .addSolutionClass("h04.GameController")
+            .addSolutionClass("h04.Main")
+            .setSimilarity(0.80)
+            .build());
     }
 }
