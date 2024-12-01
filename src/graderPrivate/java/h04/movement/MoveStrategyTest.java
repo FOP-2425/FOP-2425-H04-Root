@@ -10,7 +10,9 @@ import org.tudalgo.algoutils.transform.util.MethodHeader;
 
 import java.lang.reflect.Modifier;
 
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyContext;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 
 @TestForSubmission
 public class MoveStrategyTest {

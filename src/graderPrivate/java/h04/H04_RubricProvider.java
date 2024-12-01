@@ -1,7 +1,15 @@
 package h04;
 
-import h04.chesspieces.*;
-import h04.movement.*;
+import h04.chesspieces.BishopTest;
+import h04.chesspieces.ChessPieceTest;
+import h04.chesspieces.KingTest;
+import h04.chesspieces.QueenTest;
+import h04.chesspieces.RookTest;
+import h04.movement.DiagonalMoverTest;
+import h04.movement.MoveStrategyTest;
+import h04.movement.OrthogonalMoverTest;
+import h04.movement.TeleportingMoveStrategyTest;
+import h04.movement.WalkingMoveStrategyTest;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;

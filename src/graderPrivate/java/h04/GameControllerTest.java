@@ -23,7 +23,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertCallEquals;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.call;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 @TestForSubmission
 public class GameControllerTest {

@@ -16,7 +16,11 @@ import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.call;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyContext;
 
 @TestForSubmission
 public class TeleportingMoveStrategyTest {

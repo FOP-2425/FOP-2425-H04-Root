@@ -7,9 +7,10 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
 import org.tudalgo.algoutils.transform.util.MethodHeader;
 
-import java.awt.*;
+import java.awt.Point;
 
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyContext;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 
 @TestForSubmission
 public class ChessPieceTest {

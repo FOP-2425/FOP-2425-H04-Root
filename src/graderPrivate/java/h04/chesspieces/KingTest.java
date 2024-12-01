@@ -13,7 +13,7 @@ import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
 import org.tudalgo.algoutils.transform.util.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
-import java.awt.*;
+import java.awt.Point;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,7 +22,16 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertFalse;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertSame;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.call;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.callObject;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyContext;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 
 @TestForSubmission
 public class KingTest {
