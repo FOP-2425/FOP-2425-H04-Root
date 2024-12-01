@@ -1,30 +1,36 @@
 package h04.chesspieces;
 
+import h04.movement.MoveStrategy;
 import org.junit.jupiter.api.Test;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
+import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
+import org.tudalgo.algoutils.transform.util.MethodHeader;
 
-import java.awt.Point;
+import java.awt.*;
 
-import static h04.Links.CHESS_PIECE_GET_POSSIBLE_MOVE_FIELDS_LINK;
-import static h04.Links.CHESS_PIECE_MOVE_STRATEGY_LINK;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyContext;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 @TestForSubmission
 public class ChessPieceTest {
 
     @Test
     public void testMoveStrategyDeclaration() {
-        MethodLink moveStrategyLink = CHESS_PIECE_MOVE_STRATEGY_LINK.get();  // implicit test that method with identifier + param types exists
-        assertEquals(void.class, moveStrategyLink.returnType().reflection(), emptyContext(), result ->
-            "Return type of method moveStrategy(int, int, MoveStrategy) is incorrect");
+        MethodHeader moveStrategyMethodHeader = SubmissionExecutionHandler.getOriginalMethodHeaders(ChessPiece.class)
+            .stream()
+            .filter(methodHeader -> methodHeader.name().equals("moveStrategy") &&
+                methodHeader.descriptor().equals(Type.getMethodDescriptor(Type.VOID_TYPE, Type.INT_TYPE, Type.INT_TYPE, Type.getType(MoveStrategy.class))))
+            .findAny()
+            .orElseGet(() -> fail(emptyContext(), result -> "ChessPiece does not declare method 'moveStrategy(int, int, MoveStrategy)'"));
     }
 
     @Test
     public void testGetPossibleMoveFieldDeclaration() {
-        MethodLink getPossibleMoveFieldsLink = CHESS_PIECE_GET_POSSIBLE_MOVE_FIELDS_LINK.get();  // implicit test that method with identifier + param types exists
-        assertEquals(Point[].class, getPossibleMoveFieldsLink.returnType().reflection(), emptyContext(), result ->
-            "Return type of method getPossibleMoveFields() is incorrect");
+        MethodHeader getPossibleMoveFieldsMethodHeader = SubmissionExecutionHandler.getOriginalMethodHeaders(ChessPiece.class)
+            .stream()
+            .filter(methodHeader -> methodHeader.name().equals("getPossibleMoveFields") &&
+                methodHeader.descriptor().equals(Type.getMethodDescriptor(Type.getType(Point[].class))))
+            .findAny()
+            .orElseGet(() -> fail(emptyContext(), result -> "ChessPiece does not declare method 'getPossibleMoveFields()'"));
     }
 }
