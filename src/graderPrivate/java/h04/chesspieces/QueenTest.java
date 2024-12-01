@@ -1,35 +1,67 @@
 package h04.chesspieces;
 
 import fopbot.World;
+import h04.movement.DiagonalMover;
+import h04.movement.MoveStrategy;
+import h04.movement.OrthogonalMover;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
+import org.tudalgo.algoutils.transform.util.ClassHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.awt.*;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static h04.Links.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 
 @TestForSubmission
 public class QueenTest {
 
+    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
+
+    private static Method moveStrategyMethod;
+    private static Method getPossibleMoveFieldsMethod;
+
+    @BeforeAll
+    public static void setup() {
+        try {
+            moveStrategyMethod = Queen.class.getDeclaredMethod("moveStrategy", int.class, int.class, MoveStrategy.class);
+            getPossibleMoveFieldsMethod = Queen.class.getDeclaredMethod("getPossibleMoveFields");
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterEach
+    public void tearDown() {
+        executionHandler.resetMethodInvocationLogging();
+        executionHandler.resetMethodSubstitution();
+        executionHandler.resetMethodDelegation();
+    }
+
     @Test
     public void testClassHeader() {
-        List<Class<?>> queenInterfaces = Arrays.asList(Queen.class.getInterfaces());
-        assertTrue(queenInterfaces.contains(ORTHOGONAL_MOVER_LINK.get().reflection()), emptyContext(), result ->
-            "Class Queen does not implement interface OrthogonalMover");
-        assertTrue(queenInterfaces.contains(DIAGONAL_MOVER_LINK.get().reflection()), emptyContext(), result ->
-            "Class Queen does not implement interface DiagonalMover");
+        ClassHeader originalClassHeader = SubmissionExecutionHandler.getOriginalClassHeader(Queen.class);
+        assertTrue(Arrays.stream(originalClassHeader.interfaces()).anyMatch(s -> s.equals(Type.getInternalName(OrthogonalMover.class))),
+            emptyContext(),
+            result -> "Class h04.chesspieces.Queen does not implement interface h04.movement.OrthogonalMover");
+        assertTrue(Arrays.stream(originalClassHeader.interfaces()).anyMatch(s -> s.equals(Type.getInternalName(DiagonalMover.class))),
+            emptyContext(),
+            result -> "Class h04.chesspieces.Queen does not implement interface h04.movement.DiagonalMover");
     }
 
     @Test
     public void testGetPossibleMoveFields_Correct() {
+        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
         int worldSize = 8;
 
         for (int x : new int[] {0, worldSize - 1}) {
@@ -42,7 +74,7 @@ public class QueenTest {
                     .add("x-coordinate", x)
                     .add("y-coordinate", y)
                     .build();
-                Point[] returnValue = callObject(() -> QUEEN_GET_POSSIBLE_MOVE_FIELDS_LINK.get().invoke(queenInstance), context, result ->
+                Point[] returnValue = callObject(queenInstance::getPossibleMoveFields, context, result ->
                     "An exception occurred while invoking getPossibleMoveFields()");
 
                 assertNotNull(returnValue, context, result -> "getPossibleMoveFields() returned null");
@@ -74,30 +106,23 @@ public class QueenTest {
     }
 
     @Test
-    public void testGetPossibleMoveFields_Combine() {
+    public void testGetPossibleMoveFields_Combine() throws ReflectiveOperationException {
+        Point[] orthogonalPoints = new Point[] {new Point(1, 0), new Point(1, 2)};
+        Point[] diagonalPoints = new Point[] {new Point(0, 0), new Point(2, 2)};
+        executionHandler.substituteMethod(OrthogonalMover.class.getDeclaredMethod("getOrthogonalMoves"), invocation -> orthogonalPoints);
+        executionHandler.substituteMethod(DiagonalMover.class.getDeclaredMethod("getDiagonalMoves"), invocation -> diagonalPoints);
+        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
         int worldSize = 3;
         World.setSize(worldSize, worldSize);
         World.setDelay(0);
 
-        Point[] orthogonalPoints = new Point[] {new Point(1, 0), new Point(1, 2)};
-        Point[] diagonalPoints = new Point[] {new Point(0, 0), new Point(2, 2)};
-        Queen queenMock = Mockito.mock(Queen.class, Mockito.withSettings()
-            .useConstructor(1, 1, Team.WHITE)
-            .defaultAnswer(invocation -> {
-                if (invocation.getMethod().equals(ORTHOGONAL_MOVER_GET_ORTHOGONAL_MOVES_LINK.get().reflection())) {
-                    return orthogonalPoints;
-                } else if (invocation.getMethod().equals(DIAGONAL_MOVER_GET_DIAGONAL_MOVES_LINK.get().reflection())) {
-                    return diagonalPoints;
-                } else {
-                    return invocation.callRealMethod();
-                }
-            }));
+        Queen queenInstance = new Queen(1, 1, Team.WHITE);
         Context context = contextBuilder()
             .add("world size", worldSize)
-            .add("x-coordinate", queenMock.getX())
-            .add("y-coordinate", queenMock.getY())
+            .add("x-coordinate", queenInstance.getX())
+            .add("y-coordinate", queenInstance.getY())
             .build();
-        Point[] returnValue = callObject(() -> QUEEN_GET_POSSIBLE_MOVE_FIELDS_LINK.get().invoke(queenMock), context, result ->
+        Point[] returnValue = callObject(queenInstance::getPossibleMoveFields, context, result ->
             "An exception occurred while invoking getPossibleMoveFields()");
 
         assertNotNull(returnValue, context, result -> "getPossibleMoveFields() returned null");
