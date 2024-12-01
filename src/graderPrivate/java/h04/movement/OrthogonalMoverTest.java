@@ -1,81 +1,124 @@
 package h04.movement;
 
 import fopbot.World;
+import h04.chesspieces.ChessPiece;
 import h04.chesspieces.Team;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
+import org.tudalgo.algoutils.transform.util.ClassHeader;
+import org.tudalgo.algoutils.transform.util.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
-import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
-import org.tudalgo.algoutils.tutor.general.reflections.TypeLink;
 
 import java.awt.Point;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static h04.Links.CHESS_PIECE_GET_TEAM_LINK;
-import static h04.Links.CHESS_PIECE_GET_X_LINK;
-import static h04.Links.CHESS_PIECE_GET_Y_LINK;
-import static h04.Links.CHESS_PIECE_LINK;
-import static h04.Links.ORTHOGONAL_MOVER_GET_ORTHOGONAL_MOVES_LINK;
-import static h04.Links.ORTHOGONAL_MOVER_LINK;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.callObject;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyContext;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 @TestForSubmission
 public class OrthogonalMoverTest {
 
+    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
+
+    private static Method getOrthogonalMovesMethod;
+
+    @BeforeAll
+    public static void setup() {
+        try {
+            getOrthogonalMovesMethod = OrthogonalMover.class.getDeclaredMethod("getOrthogonalMoves");
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterEach
+    public void tearDown() {
+        executionHandler.resetMethodInvocationLogging();
+        executionHandler.resetMethodSubstitution();
+        executionHandler.resetMethodDelegation();
+    }
+
     @Test
     public void testClassHeader() {
-        TypeLink orthogonalMoverLink = ORTHOGONAL_MOVER_LINK.get();
-        assertTrue(orthogonalMoverLink.interfaces().contains(CHESS_PIECE_LINK.get()), emptyContext(), result ->
-            "Interface OrthogonalMover does not extend ChessPiece");
+        ClassHeader originalClassHeader = SubmissionExecutionHandler.getOriginalClassHeader(OrthogonalMover.class);
+        assertTrue(Arrays.stream(originalClassHeader.interfaces()).anyMatch(s -> s.equals(Type.getInternalName(ChessPiece.class))),
+            emptyContext(),
+            result -> "Interface h04.movement.OrthogonalMover does not extend interface h04.movement.ChessPiece");
     }
 
     @Test
     public void testMethodHeader() {
-        MethodLink getOrthogonalMovesLink = ORTHOGONAL_MOVER_GET_ORTHOGONAL_MOVES_LINK.get();
-        assertEquals(Point[].class, getOrthogonalMovesLink.returnType().reflection(), emptyContext(), result ->
-            "Return type of method getOrthogonalMoves() is incorrect");
-        assertTrue(getOrthogonalMovesLink.reflection().isDefault(), emptyContext(), result ->
+        MethodHeader getOrthogonalMovesMethodHeader = SubmissionExecutionHandler.getOriginalMethodHeaders(OrthogonalMover.class)
+            .stream()
+            .filter(methodHeader -> methodHeader.name().equals("getOrthogonalMoves") &&
+                methodHeader.descriptor().equals(Type.getMethodDescriptor(Type.getType(Point[].class))))
+            .findAny()
+            .orElseGet(() -> fail(emptyContext(), result -> "OrthogonalMover does not declare method 'getOrthogonalMoves()'"));
+        assertTrue(Modifier.isPublic(getOrthogonalMovesMethodHeader.access()), emptyContext(), result ->
+            "Method getOrthogonalMoves() is not declared public");
+        assertFalse(Modifier.isAbstract(getOrthogonalMovesMethodHeader.access()), emptyContext(), result ->
             "Method getOrthogonalMoves() is not declared default");
     }
 
     @Test
     public void testGetOrthogonalMoves() {
+        executionHandler.disableMethodDelegation(getOrthogonalMovesMethod);
         int worldSize = 8;
         World.setSize(worldSize, worldSize);
         World.setDelay(0);
 
         for (int x : new int[] {0, worldSize - 1}) {
             for (int y : new int[] {0, worldSize - 1}) {
-                Answer<?> answer = invocation -> {
-                    if (invocation.getMethod().equals(CHESS_PIECE_GET_X_LINK.get().reflection())) {
-                        return x;
-                    } else if (invocation.getMethod().equals(CHESS_PIECE_GET_Y_LINK.get().reflection())) {
-                        return y;
-                    } else if (invocation.getMethod().equals(CHESS_PIECE_GET_TEAM_LINK.get().reflection())) {
+                OrthogonalMover orthogonalMoverInstance = new OrthogonalMover() {
+                    @Override
+                    public Team getTeam() {
                         return Team.WHITE;
-                    } else if (invocation.getMethod().equals(ORTHOGONAL_MOVER_GET_ORTHOGONAL_MOVES_LINK.get().reflection())) {
-                        return invocation.callRealMethod();
-                    } else {
-                        return Mockito.RETURNS_DEFAULTS.answer(invocation);
+                    }
+
+                    @Override
+                    public int getX() {
+                        return x;
+                    }
+
+                    @Override
+                    public int getY() {
+                        return y;
+                    }
+
+                    @Override
+                    public boolean isTurnedOff() {
+                        return false;
+                    }
+
+                    @Override
+                    public void turnOff() {
+
+                    }
+
+                    @Override
+                    public void moveStrategy(int dx, int dy, MoveStrategy strategy) {
+
+                    }
+
+                    @Override
+                    public Point[] getPossibleMoveFields() {
+                        return new Point[0];
                     }
                 };
-                Object orthogonalMoverInstance = Mockito.mock(ORTHOGONAL_MOVER_LINK.get().reflection(), answer);
                 Context context = contextBuilder()
                     .add("ChessPiece x-coordinate", x)
                     .add("ChessPiece y-coordinate", y)
                     .build();
-                Point[] returnValue = callObject(() -> ORTHOGONAL_MOVER_GET_ORTHOGONAL_MOVES_LINK.get().invoke(orthogonalMoverInstance), context, result ->
+                Point[] returnValue = callObject(orthogonalMoverInstance::getOrthogonalMoves, context, result ->
                     "An exception occurred while invoking getOrthogonalMoves()");
 
                 assertNotNull(returnValue, context, result -> "getOrthogonalMoves() returned null");
@@ -87,7 +130,7 @@ public class OrthogonalMoverTest {
                         }
                         Point expectedPoint = new Point(vector.x * n + x, vector.y * n + y);
                         assertTrue(points.contains(expectedPoint), context, result ->
-                            "Point %s was not found in returned array".formatted(expectedPoint));
+                            "Point %s was not found in the returned array".formatted(expectedPoint));
                         points.remove(expectedPoint);
                     }
                 }
