@@ -7,10 +7,11 @@ import kotlin.Triple;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
+import org.tudalgo.algoutils.transform.util.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
-import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
 
 import java.awt.*;
 import java.lang.reflect.Method;
@@ -21,7 +22,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static h04.Links.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 @TestForSubmission
@@ -30,11 +30,13 @@ public class KingTest {
     private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
 
     private static Method moveStrategyMethod;
+    private static Method getPossibleMoveFieldsMethod;
 
     @BeforeAll
     public static void setup() {
         try {
             moveStrategyMethod = King.class.getDeclaredMethod("moveStrategy", int.class, int.class, MoveStrategy.class);
+            getPossibleMoveFieldsMethod = King.class.getDeclaredMethod("getPossibleMoveFields");
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
@@ -82,9 +84,12 @@ public class KingTest {
 
     @Test
     public void testGetPossibleMoveFieldsHeader() {
-        MethodLink moveStrategyLink = KING_GET_POSSIBLE_MOVE_FIELDS_LINK.get();  // implicit test that method with identifier + param types exists
-        assertEquals(Point[].class, moveStrategyLink.returnType().reflection(), emptyContext(), result ->
-            "Return type of method getPossibleMoveFields() is incorrect");
+        MethodHeader getPossibleMoveFieldsMethodHeader = SubmissionExecutionHandler.getOriginalMethodHeaders(King.class)
+            .stream()
+            .filter(methodHeader -> methodHeader.name().equals("getPossibleMoveFields") &&
+                methodHeader.descriptor().equals(Type.getMethodDescriptor(Type.getType(Point[].class))))
+            .findAny()
+            .orElseGet(() -> fail(emptyContext(), result -> "King does not declare method 'getPossibleMoveFields()'"));
     }
 
     @Test
@@ -151,6 +156,7 @@ public class KingTest {
     }
 
     private Triple<Context, King, Point[]> invokeGetPossibleMoveFields(int worldSize, int x, int y) {
+        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
         World.setSize(worldSize, worldSize);
         World.setDelay(0);
         King kingInstance = new King(x, y, Team.WHITE);
@@ -159,7 +165,7 @@ public class KingTest {
             .add("x-coordinate", x)
             .add("y-coordinate", y)
             .build();
-        Point[] returnValue = callObject(() -> KING_GET_POSSIBLE_MOVE_FIELDS_LINK.get().invoke(kingInstance), context, result ->
+        Point[] returnValue = callObject(kingInstance::getPossibleMoveFields, context, result ->
             "An exception occurred while invoking getPossibleMoveFields()");
         return new Triple<>(context, kingInstance, returnValue);
     }
