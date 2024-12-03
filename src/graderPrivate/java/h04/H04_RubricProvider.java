@@ -10,10 +10,7 @@ import h04.movement.MoveStrategyTest;
 import h04.movement.OrthogonalMoverTest;
 import h04.movement.TeleportingMoveStrategyTest;
 import h04.movement.WalkingMoveStrategyTest;
-import org.sourcegrade.jagr.api.rubric.Criterion;
-import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
-import org.sourcegrade.jagr.api.rubric.Rubric;
-import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.SolutionMergingClassTransformer;
 
@@ -183,17 +180,17 @@ public class H04_RubricProvider implements RubricProvider {
             .addSolutionClass("h04.chesspieces.Queen")
             .addSolutionClass("h04.chesspieces.Rook")
             .addSolutionClass("h04.chesspieces.Team")
-            .addSolutionClass("h04.movement.DiagonalMover")
-            .addSolutionClass("h04.movement.MoveStrategy")
-            .addSolutionClass("h04.movement.OrthogonalMover")
-            .addSolutionClass("h04.movement.TeleportingMoveStrategy")
-            .addSolutionClass("h04.movement.WalkingMoveStrategy")
+            .addSolutionClass("h04.movement.DiagonalMover", "h04.DiagonalMover")
+            .addSolutionClass("h04.movement.MoveStrategy", "h04.MoveStrategy")
+            .addSolutionClass("h04.movement.OrthogonalMover", "h04.OrthogonalMover")
+            .addSolutionClass("h04.movement.TeleportingMoveStrategy", "h04.TeleportingMoveStrategy")
+            .addSolutionClass("h04.movement.WalkingMoveStrategy", "h04.WalkingMoveStrategy")
             .addSolutionClass("h04.template.ChessUtils")
             .addSolutionClass("h04.template.GameControllerTemplate")
             .addSolutionClass("h04.template.InputHandler")
             .addSolutionClass("h04.GameController")
             .addSolutionClass("h04.Main")
-            .setSimilarity(0.80)
+            .setSimilarity(0.85)
             .build());
     }
 }
