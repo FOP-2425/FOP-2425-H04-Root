@@ -4,17 +4,15 @@ import fopbot.World;
 import h04.chesspieces.ChessPiece;
 import h04.chesspieces.Team;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
-import org.tudalgo.algoutils.transform.util.ClassHeader;
-import org.tudalgo.algoutils.transform.util.MethodHeader;
+import org.tudalgo.algoutils.transform.util.headers.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.awt.Point;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,24 +32,11 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 @TestForSubmission
 public class DiagonalMoverTest {
 
-    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
-
-    private static Method getDiagonalMovesMethod;
-
-    @BeforeAll
-    public static void setup() {
-        try {
-            getDiagonalMovesMethod = DiagonalMover.class.getDeclaredMethod("getDiagonalMoves");
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-    }
+    private final MethodHeader diagonalMover_getDiagonalMoves = MethodHeader.of(DiagonalMover.class, "getDiagonalMoves");
 
     @AfterEach
     public void tearDown() {
-        executionHandler.resetMethodInvocationLogging();
-        executionHandler.resetMethodSubstitution();
-        executionHandler.resetMethodDelegation();
+        SubmissionExecutionHandler.resetAll();
     }
 
     @Test
@@ -78,7 +63,7 @@ public class DiagonalMoverTest {
 
     @Test
     public void testGetDiagonalMoves() {
-        executionHandler.disableMethodDelegation(getDiagonalMovesMethod);
+        SubmissionExecutionHandler.Delegation.disable(diagonalMover_getDiagonalMoves);
         int worldSize = 8;
         World.setSize(worldSize, worldSize);
         World.setDelay(0);

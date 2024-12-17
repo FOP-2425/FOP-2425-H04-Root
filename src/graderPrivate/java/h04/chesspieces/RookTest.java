@@ -5,16 +5,15 @@ import fopbot.World;
 import h04.movement.MoveStrategy;
 import h04.movement.OrthogonalMover;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
-import org.tudalgo.algoutils.transform.util.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.awt.Point;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,26 +29,14 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyCo
 @TestForSubmission
 public class RookTest {
 
-    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
-
-    private static Method moveStrategyMethod;
-    private static Method getPossibleMoveFieldsMethod;
-
-    @BeforeAll
-    public static void setup() {
-        try {
-            moveStrategyMethod = Rook.class.getDeclaredMethod("moveStrategy", int.class, int.class, MoveStrategy.class);
-            getPossibleMoveFieldsMethod = Rook.class.getDeclaredMethod("getPossibleMoveFields");
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-    }
+    private final MethodHeader rook_moveStrategy = MethodHeader.of(Rook.class,
+        "moveStrategy", int.class, int.class, MoveStrategy.class);
+    private final MethodHeader rook_getPossibleMoveFields = MethodHeader.of(Rook.class,
+        "getPossibleMoveFields");
 
     @AfterEach
     public void tearDown() {
-        executionHandler.resetMethodInvocationLogging();
-        executionHandler.resetMethodSubstitution();
-        executionHandler.resetMethodDelegation();
+        SubmissionExecutionHandler.resetAll();
     }
 
     @Test
@@ -62,7 +49,7 @@ public class RookTest {
 
     @Test
     public void testMoveStrategy() {
-        executionHandler.disableMethodDelegation(moveStrategyMethod);
+        SubmissionExecutionHandler.Delegation.disable(rook_moveStrategy);
 
         World.setSize(3, 3);
         World.setDelay(0);
@@ -94,12 +81,13 @@ public class RookTest {
     }
 
     @Test
-    public void testGetPossibleMoveFields() throws ReflectiveOperationException {
-        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
+    public void testGetPossibleMoveFields() {
+        SubmissionExecutionHandler.Delegation.disable(rook_getPossibleMoveFields);
         Point[] points = new Point[0];
-        executionHandler.substituteMethod(OrthogonalMover.class.getDeclaredMethod("getOrthogonalMoves"), invocation -> points);
+        SubmissionExecutionHandler.Substitution.enable(MethodHeader.of(OrthogonalMover.class, "getOrthogonalMoves"),
+            invocation -> points);
 
-        int worldSize = 3;
+        int worldSize = 8;
         World.setSize(worldSize, worldSize);
         World.setDelay(0);
         Context context = contextBuilder()

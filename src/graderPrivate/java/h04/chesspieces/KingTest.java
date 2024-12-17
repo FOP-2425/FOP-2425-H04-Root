@@ -5,16 +5,14 @@ import fopbot.World;
 import h04.movement.MoveStrategy;
 import kotlin.Triple;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
-import org.tudalgo.algoutils.transform.util.MethodHeader;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.awt.Point;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -36,31 +34,19 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 @TestForSubmission
 public class KingTest {
 
-    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
-
-    private static Method moveStrategyMethod;
-    private static Method getPossibleMoveFieldsMethod;
-
-    @BeforeAll
-    public static void setup() {
-        try {
-            moveStrategyMethod = King.class.getDeclaredMethod("moveStrategy", int.class, int.class, MoveStrategy.class);
-            getPossibleMoveFieldsMethod = King.class.getDeclaredMethod("getPossibleMoveFields");
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-    }
+    private final MethodHeader king_moveStrategy = MethodHeader.of(King.class,
+        "moveStrategy", int.class, int.class, MoveStrategy.class);
+    private final MethodHeader king_getPossibleMoveFieldsMethod = MethodHeader.of(King.class,
+        "getPossibleMoveFields");
 
     @AfterEach
     public void tearDown() {
-        executionHandler.resetMethodInvocationLogging();
-        executionHandler.resetMethodSubstitution();
-        executionHandler.resetMethodDelegation();
+        SubmissionExecutionHandler.resetAll();
     }
 
     @Test
     public void testMoveStrategy() {
-        executionHandler.disableMethodDelegation(moveStrategyMethod);
+        SubmissionExecutionHandler.Delegation.disable(king_moveStrategy);
 
         World.setSize(3, 3);
         World.setDelay(0);
@@ -165,7 +151,7 @@ public class KingTest {
     }
 
     private Triple<Context, King, Point[]> invokeGetPossibleMoveFields(int worldSize, int x, int y) {
-        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
+        SubmissionExecutionHandler.Delegation.disable(king_getPossibleMoveFieldsMethod);
         World.setSize(worldSize, worldSize);
         World.setDelay(0);
         King kingInstance = new King(x, y, Team.WHITE);

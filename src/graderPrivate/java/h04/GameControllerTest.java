@@ -7,7 +7,6 @@ import h04.chesspieces.Team;
 import h04.template.ChessUtils;
 import h04.template.GameControllerTemplate;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,11 +15,10 @@ import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
 import org.tudalgo.algoutils.transform.util.Invocation;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 import org.tudalgo.algoutils.transform.util.MethodSubstitution;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertCallEquals;
@@ -31,20 +29,9 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 public class GameControllerTest {
 
-    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
-
-    private static Constructor<?> gameControllerConstructor;
-    private static Method checkWinConditionMethod;
-
-    @BeforeAll
-    public static void setup() {
-        try {
-            gameControllerConstructor = GameController.class.getDeclaredConstructor();
-            checkWinConditionMethod = GameController.class.getDeclaredMethod("checkWinCondition");
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-    }
+    private final MethodHeader gameControllerConstructor = MethodHeader.of(GameController.class);
+    private final MethodHeader gameController_checkWinCondition = MethodHeader.of(GameController.class, "checkWinCondition");
+    private final MethodHeader chessUtils_getKings = MethodHeader.of(ChessUtils.class, "getKings");
 
     @BeforeEach
     public void setupEnvironment() {
@@ -54,14 +41,12 @@ public class GameControllerTest {
 
     @AfterEach
     public void tearDown() {
-        executionHandler.resetMethodInvocationLogging();
-        executionHandler.resetMethodSubstitution();
-        executionHandler.resetMethodDelegation();
+        SubmissionExecutionHandler.resetAll();
     }
 
     @Test
-    public void testCheckWinConditionCallsChessUtils() throws ReflectiveOperationException {
-        executionHandler.substituteMethod(gameControllerConstructor, new MethodSubstitution() {
+    public void testCheckWinConditionCallsChessUtils() {
+        SubmissionExecutionHandler.Substitution.enable(gameControllerConstructor, new MethodSubstitution() {
             @Override
             public ConstructorInvocation getConstructorInvocation() {
                 return new ConstructorInvocation(Type.getInternalName(GameControllerTemplate.class), "()V");
@@ -72,9 +57,8 @@ public class GameControllerTest {
                 return null;
             }
         });
-        Method getKingsMethod = ChessUtils.class.getDeclaredMethod("getKings");
-        executionHandler.enableMethodInvocationLogging(getKingsMethod);
-        executionHandler.disableMethodDelegation(checkWinConditionMethod);
+        SubmissionExecutionHandler.Logging.enable(chessUtils_getKings);
+        SubmissionExecutionHandler.Delegation.disable(gameController_checkWinCondition);
 
         King whiteKing = new King(0, 0, Team.WHITE);
         King blackKing = new King(1, 0, Team.BLACK);
@@ -84,13 +68,15 @@ public class GameControllerTest {
             .build();
 
         call(() -> new GameController().checkWinCondition(), context, result -> "An exception occurred while invoking method checkWinCondition");
-        assertTrue(!executionHandler.getInvocationsForMethod(getKingsMethod).isEmpty(), context, result -> "ChessUtils.getKings() was not called at least once");
+        assertTrue(!SubmissionExecutionHandler.Logging.getInvocations(chessUtils_getKings).isEmpty(),
+            context,
+            result -> "ChessUtils.getKings() was not called at least once");
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
     public void testCheckWinCondition(int n) {
-        executionHandler.substituteMethod(gameControllerConstructor, new MethodSubstitution() {
+        SubmissionExecutionHandler.Substitution.enable(gameControllerConstructor, new MethodSubstitution() {
             @Override
             public ConstructorInvocation getConstructorInvocation() {
                 return new ConstructorInvocation(Type.getInternalName(GameControllerTemplate.class), "()V");
@@ -101,7 +87,7 @@ public class GameControllerTest {
                 return null;
             }
         });
-        executionHandler.disableMethodDelegation(checkWinConditionMethod);
+        SubmissionExecutionHandler.Delegation.disable(gameController_checkWinCondition);
 
         boolean turnOffWhiteKing = (n & 1) != 0;
         boolean turnOffBlackKing = (n & 2) != 0;

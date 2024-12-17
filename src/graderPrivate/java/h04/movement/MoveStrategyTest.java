@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
-import org.tudalgo.algoutils.transform.util.ClassHeader;
-import org.tudalgo.algoutils.transform.util.MethodHeader;
+import org.tudalgo.algoutils.transform.util.headers.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 
 import java.lang.reflect.Modifier;
 

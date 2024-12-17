@@ -4,17 +4,16 @@ import fopbot.Direction;
 import fopbot.Robot;
 import fopbot.World;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
-import org.tudalgo.algoutils.transform.util.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
@@ -26,24 +25,12 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyCo
 @TestForSubmission
 public class WalkingMoveStrategyTest {
 
-    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
-
-    private static Method moveMethod;
-
-    @BeforeAll
-    public static void setup() {
-        try {
-            moveMethod = WalkingMoveStrategy.class.getDeclaredMethod("move", Robot.class, int.class, int.class);
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-    }
+    private final MethodHeader walkingMoveStrategy_move = MethodHeader.of(WalkingMoveStrategy.class,
+        "move", Robot.class, int.class, int.class);
 
     @AfterEach
     public void tearDown() {
-        executionHandler.resetMethodInvocationLogging();
-        executionHandler.resetMethodSubstitution();
-        executionHandler.resetMethodDelegation();
+        SubmissionExecutionHandler.resetAll();
     }
 
     @Test
@@ -57,7 +44,7 @@ public class WalkingMoveStrategyTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 4, 5, 6, 8, 9, 10})
     public void testMove(int n) {  // encoding: 4 bits, lower 2: x-coordinate, upper 2: y-coordinate
-        executionHandler.disableMethodDelegation(moveMethod);
+        SubmissionExecutionHandler.Delegation.disable(walkingMoveStrategy_move);
         Robot robot = setupEnvironment();
         int expectedX = n & 0b11;
         int expectedY = n >> 2;
@@ -70,7 +57,7 @@ public class WalkingMoveStrategyTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 4, 5, 6, 8, 9, 10})
     public void testMoveFacesUp(int n) {  // encoding: 4 bits, lower 2: x-coordinate, upper 2: y-coordinate
-        executionHandler.disableMethodDelegation(moveMethod);
+        SubmissionExecutionHandler.Delegation.disable(walkingMoveStrategy_move);
         Robot robot = setupEnvironment();
         Context context = invokeMove(robot, n);
 

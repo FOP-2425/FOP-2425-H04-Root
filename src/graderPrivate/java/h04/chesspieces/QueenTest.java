@@ -5,16 +5,15 @@ import h04.movement.DiagonalMover;
 import h04.movement.MoveStrategy;
 import h04.movement.OrthogonalMover;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.transform.SubmissionExecutionHandler;
-import org.tudalgo.algoutils.transform.util.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.ClassHeader;
+import org.tudalgo.algoutils.transform.util.headers.MethodHeader;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.awt.Point;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -33,26 +32,13 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.emptyCo
 @TestForSubmission
 public class QueenTest {
 
-    private final SubmissionExecutionHandler executionHandler = SubmissionExecutionHandler.getInstance();
-
-    private static Method moveStrategyMethod;
-    private static Method getPossibleMoveFieldsMethod;
-
-    @BeforeAll
-    public static void setup() {
-        try {
-            moveStrategyMethod = Queen.class.getDeclaredMethod("moveStrategy", int.class, int.class, MoveStrategy.class);
-            getPossibleMoveFieldsMethod = Queen.class.getDeclaredMethod("getPossibleMoveFields");
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
-    }
+    private final MethodHeader queen_moveStrategy = MethodHeader.of(Queen.class,
+        "moveStrategy", int.class, int.class, MoveStrategy.class);
+    private final MethodHeader queen_getPossibleMoveFields = MethodHeader.of(Queen.class, "getPossibleMoveFields");
 
     @AfterEach
     public void tearDown() {
-        executionHandler.resetMethodInvocationLogging();
-        executionHandler.resetMethodSubstitution();
-        executionHandler.resetMethodDelegation();
+        SubmissionExecutionHandler.resetAll();
     }
 
     @Test
@@ -68,7 +54,7 @@ public class QueenTest {
 
     @Test
     public void testGetPossibleMoveFields_Correct() {
-        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
+        SubmissionExecutionHandler.Delegation.disable(queen_getPossibleMoveFields);
         int worldSize = 8;
 
         for (int x : new int[] {0, worldSize - 1}) {
@@ -113,13 +99,9 @@ public class QueenTest {
     }
 
     @Test
-    public void testGetPossibleMoveFields_Combine() throws ReflectiveOperationException {
-        Point[] orthogonalPoints = new Point[] {new Point(1, 0), new Point(1, 2)};
-        Point[] diagonalPoints = new Point[] {new Point(0, 0), new Point(2, 2)};
-        executionHandler.substituteMethod(OrthogonalMover.class.getDeclaredMethod("getOrthogonalMoves"), invocation -> orthogonalPoints);
-        executionHandler.substituteMethod(DiagonalMover.class.getDeclaredMethod("getDiagonalMoves"), invocation -> diagonalPoints);
-        executionHandler.disableMethodDelegation(getPossibleMoveFieldsMethod);
-        int worldSize = 3;
+    public void testGetPossibleMoveFields_Combine() {
+        SubmissionExecutionHandler.Delegation.disable(queen_getPossibleMoveFields);
+        int worldSize = 8;
         World.setSize(worldSize, worldSize);
         World.setDelay(0);
 
@@ -133,7 +115,10 @@ public class QueenTest {
             "An exception occurred while invoking getPossibleMoveFields()");
 
         assertNotNull(returnValue, context, result -> "getPossibleMoveFields() returned null");
-        Set<Point> expectedPoints = Stream.of(orthogonalPoints, diagonalPoints).flatMap(Stream::of).collect(Collectors.toSet());
+        Set<Point> expectedPoints = Stream.of(queenInstance.getDiagonalMoves(), queenInstance.getOrthogonalMoves())
+            .flatMap(Stream::of)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
         Set<Point> actualPoints = Arrays.stream(returnValue).filter(Objects::nonNull).collect(Collectors.toSet());
         assertEquals(expectedPoints, actualPoints, context, result ->
             "Method did not merge results of getOrthogonalMoves() and getDiagonalMoves()");

@@ -190,7 +190,7 @@ public class H04_RubricProvider implements RubricProvider {
             .addSolutionClass("h04.template.InputHandler")
             .addSolutionClass("h04.GameController")
             .addSolutionClass("h04.Main")
-            .setSimilarity(0.85)
+            .setSimilarity(0.90)
             .build());
     }
 }
