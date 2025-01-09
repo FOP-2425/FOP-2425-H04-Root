@@ -31,7 +31,11 @@ dependencies {
 
 jagr {
     graders {
-        val graderPublic by getting
+        val graderPublic by getting {
+            configureDependencies {
+                implementation(libs.algoutils.tutor)
+            }
+        }
         val graderPrivate by creating {
             parent(graderPublic)
             graderName.set("FOP-2425-H04-Private")
